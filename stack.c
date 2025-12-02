@@ -7,15 +7,15 @@ int isFull(){
     return(top==max-1);
 }
 void push(int data){
-   
     top++;
     arr[top]=data;
-
 }
-int isEmpty(){
+int isEmpty()
+{
     return(top==-1);
 }
-int pop(){
+int pop()
+{
       if(isEmpty())
         {
             printf("the stack is empty\n");
@@ -25,9 +25,23 @@ int pop(){
     top--;
     return data;
 }
-int main(){
+int peek(){
+    if(isEmpty()){
+        printf("the stack is underflow\n");
+        exit(1);
+    }
+    return(arr[top]);
+}
+void print(){
+     for(int i=top;i>=0;i--){
+         printf("%d\t",arr[i]);
+     }
+     printf("\n");
+}
+int main()
+{
     int n,c;
-    printf("1:push  2:exit 3:pop ");
+    printf("1:push\n2:see top element\n3:pop\n4:exit\n5:see all element\n");
     while(1)
     {
         printf("choice>>");
@@ -36,7 +50,7 @@ int main(){
             
         case 1:
               {
-                 if(isFull()){
+                  if(isFull(c)){
                  printf("stack overfull\n");
                  break;
                  }
@@ -49,16 +63,25 @@ int main(){
         break;
            }
         case 2:{
-            exit(0);   
+             printf("the top element is>>%d\n",peek());
+            break;
              }
         case 3:{
           printf("%d\n",pop());  
           break;
         }
-    }}
-    printf("the stack elements are>>");
-for(int i=top;i>=0;i--){
-    printf("%d\t",arr[i]);
+        case 4:{
+           exit(1);
+           break;
+        }
+        case 5:{
+         print();
+         break;
+        }
+        default:
+        printf("invalid choice\n");
+        break;
+    }
 }
-    
+return 0;
 }
