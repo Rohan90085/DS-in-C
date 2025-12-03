@@ -1,0 +1,1 @@
+//application of stack by using arraay

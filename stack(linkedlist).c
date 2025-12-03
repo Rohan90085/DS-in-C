@@ -22,9 +22,30 @@ void push(int d){
     newnode->link=top;
     top=newnode;
 }
-void view(){
+int pop(){
+    node *temp=top;
     if(top==NULL){
         printf("stack is empty\n");
+        exit(1);
+    }
+    int data;
+    data=temp->data;
+    top=temp->link;
+    free(temp);
+    temp=NULL;
+    return data;
+}
+int peek(){
+    if(top==NULL){
+        printf("the stack is underflow");
+        exit(1);
+    }
+    int d=top->data;
+    return d;
+}
+void view(){
+    if(top==NULL){
+        printf("stack is underflow\n");
         return;
     }
     node *temp=top;
@@ -36,7 +57,7 @@ void view(){
 }
 int main(){
     int c,d;
-    printf("1:push\n2:view\n");
+    printf("1:push\n2:pop\n3:peek\n4:view\n5:exit\n");
     while(1){
         printf("eneter u r choice>>");
         scanf("%d",&c);
@@ -48,8 +69,18 @@ int main(){
                     push(d);
                     break;
             case 2:
-                    view();
+                    printf("the popped element>>%d\n",pop());
                     break;
+            case 3:
+                 printf("the top element>>%d\n",peek());
+                  break;
+            case 4:
+                   view();
+                   break;
+            case 5:
+                   exit(1);
+            default:
+                   printf("invalid choice");
             
         }
     }
