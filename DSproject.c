@@ -1,7 +1,4 @@
-/* hospital_final.c
-   Final Hospital Management System (Linked List + Strong Validation)
-   Compile: gcc hospital_final.c -o hospital
-*/
+
 
 #include <stdio.h>
 #include <stdlib.h>

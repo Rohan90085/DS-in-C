@@ -1,0 +1,1102 @@
+# Hospital Management System - Complete Line-by-Line Explanation
+
+## Header Comments (Lines 1-4)
+
+```c
+/* hospital_final.c
+   Final Hospital Management System (Linked List + Strong Validation)
+   Compile: gcc hospital_final.c -o hospital
+*/
+```
+**Purpose:** Documentation block describing the file, its purpose, and how to compile it.
+
+---
+
+## Include Statements (Lines 6-10)
+
+```c
+#include <stdio.h>
+```
+**Includes:** Standard Input/Output library for functions like `printf()`, `scanf()`, `fgets()`.
+
+```c
+#include <stdlib.h>
+```
+**Includes:** Standard library for `malloc()`, `free()`, `atoi()`, `strtol()`, `exit()`.
+
+```c
+#include <string.h>
+```
+**Includes:** String manipulation functions like `strcpy()`, `strlen()`, `strcmp()`, `strcspn()`.
+
+```c
+#include <ctype.h>
+```
+**Includes:** Character type functions like `isdigit()`, `isalpha()`, `tolower()`.
+
+---
+
+## Macro Definitions (Lines 12-16)
+
+```c
+#define NAME_LEN 64
+```
+**Defines:** Maximum length for patient name (63 characters + null terminator).
+
+```c
+#define DISEASE_LEN 64
+```
+**Defines:** Maximum length for disease description.
+
+```c
+#define CONTACT_LEN 16
+```
+**Defines:** Maximum length for contact number (allows space for future formatting).
+
+```c
+#define DATE_LEN 12
+```
+**Defines:** Length for date string in YYYY/MM/DD format (10 chars + null + buffer).
+
+```c
+#define GENDER_LEN 10
+```
+**Defines:** Maximum length for gender field.
+
+---
+
+## Structure Definition (Lines 18-28)
+
+```c
+/* ---------------------- STRUCTURE ---------------------- */
+```
+**Comment:** Section marker for better code organization.
+
+```c
+typedef struct Patient {
+```
+**Creates:** A new data type called `Patient` using structure.
+**typedef:** Allows us to use `Patient` instead of `struct Patient`.
+
+```c
+    int patientID;
+```
+**Field:** Unique integer identifier for each patient.
+
+```c
+    char name[NAME_LEN];
+```
+**Field:** Character array to store patient's name (up to 63 characters).
+
+```c
+    int age;
+```
+**Field:** Integer to store patient's age.
+
+```c
+    char gender[GENDER_LEN];
+```
+**Field:** String to store gender (Male/Female/Others).
+
+```c
+    char contact[CONTACT_LEN];
+```
+**Field:** String to store 10-digit contact number.
+
+```c
+    char disease[DISEASE_LEN];
+```
+**Field:** String to store disease or medical condition.
+
+```c
+    char admitDate[DATE_LEN];
+```
+**Field:** String to store admission date in YYYY/MM/DD format.
+
+```c
+    struct Patient *next;
+```
+**Field:** Pointer to next Patient node (for linked list).
+**Purpose:** Enables creating a chain of patient records.
+
+```c
+} Patient;
+```
+**Closes:** The structure definition and names it `Patient`.
+
+---
+
+## Global Variable (Line 30)
+
+```c
+Patient *head = NULL;
+```
+**Declares:** Global pointer to the first patient in the linked list.
+**Initialized:** To NULL (empty list initially).
+**Scope:** Accessible throughout the entire program.
+
+---
+
+## Utility Function 1: trim_newline (Lines 34-36)
+
+```c
+/* ---------------------- UTILITIES ---------------------- */
+```
+**Comment:** Section marker for utility functions.
+
+```c
+void trim_newline(char *s) {
+```
+**Function:** Removes newline character from end of string.
+**Parameter:** `s` - pointer to string to be trimmed.
+**Return:** void (modifies string in place).
+
+```c
+    s[strcspn(s, "\n")] = '\0';
+```
+**How it works:**
+- `strcspn(s, "\n")` finds position of first newline character
+- If found, replaces it with null terminator `'\0'`
+- If not found, returns string length, null terminator already there
+
+```c
+}
+```
+**Closes:** Function definition.
+
+---
+
+## Utility Function 2: getValidPositiveInteger (Lines 38-62)
+
+```c
+int getValidPositiveInteger(const char *prompt) {
+```
+**Function:** Gets a validated positive integer from user.
+**Parameter:** `prompt` - message to display to user.
+**Return:** A positive integer.
+**const:** Prevents modification of prompt string.
+
+```c
+    char buf[128];
+```
+**Declares:** Buffer to store user input (up to 127 characters).
+
+```c
+    while (1) {
+```
+**Loop:** Infinite loop, continues until valid input received and `return` executed.
+
+```c
+        printf("%s", prompt);
+```
+**Displays:** The prompt message to user.
+
+```c
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+```
+**Reads:** User input safely into buffer.
+**fgets:** Reads up to 127 characters or until newline.
+**If fails:** (EOF or error) skip to next iteration with `continue`.
+
+```c
+        trim_newline(buf);
+```
+**Removes:** Trailing newline character from input.
+
+```c
+        if (strlen(buf) == 0) {
+            printf("Input required.\n"); continue;
+        }
+```
+**Checks:** If input is empty.
+**If empty:** Display error and prompt again.
+
+```c
+        int valid = 1;
+```
+**Flag:** Assumes input is valid initially.
+
+```c
+        for (size_t i = 0; i < strlen(buf); i++) {
+```
+**Loop:** Through each character in the input string.
+**size_t:** Unsigned integer type for sizes.
+
+```c
+            if (!isdigit((unsigned char)buf[i])) { valid = 0; break; }
+```
+**Checks:** If character is not a digit.
+**isdigit():** Returns true if character is 0-9.
+**If not digit:** Set flag to 0 and exit loop.
+**(unsigned char):** Cast prevents issues with negative char values.
+
+```c
+        }
+```
+**Closes:** For loop.
+
+```c
+        if (!valid) {
+            printf("Invalid! Only digits allowed.\n");
+            continue;
+        }
+```
+**Checks:** If any non-digit was found.
+**If invalid:** Display error and restart loop.
+
+```c
+        long v = strtol(buf, NULL, 10);
+```
+**Converts:** String to long integer.
+**strtol:** String to long conversion function.
+**Parameters:** (string, end_pointer, base)
+**10:** Base 10 (decimal) number system.
+
+```c
+        if (v <= 0) {
+            printf("Value must be > 0.\n");
+            continue;
+        }
+```
+**Validates:** Number must be positive (greater than zero).
+**If not:** Display error and restart loop.
+
+```c
+        return (int)v;
+```
+**Returns:** The validated positive integer.
+**Cast:** From long to int.
+
+```c
+    }
+}
+```
+**Closes:** While loop and function.
+
+---
+
+## Utility Function 3: getValidAlphaSpace (Lines 64-92)
+
+```c
+void getValidAlphaSpace(const char *prompt, char *out, size_t outlen) {
+```
+**Function:** Gets input containing only alphabets and spaces.
+**Parameters:**
+- `prompt` - message to display
+- `out` - buffer to store validated input
+- `outlen` - maximum size of output buffer
+
+```c
+    char buf[256];
+```
+**Declares:** Temporary buffer for user input.
+
+```c
+    while (1) {
+        printf("%s", prompt);
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+```
+**Same as before:** Display prompt, read input, handle errors.
+
+```c
+        trim_newline(buf);
+        if (strlen(buf) == 0) {
+            printf("Input required.\n");
+            continue;
+        }
+```
+**Same as before:** Remove newline, check for empty input.
+
+```c
+        int valid = 1;
+        for (size_t i = 0; buf[i]; i++) {
+```
+**Loop:** Through each character until null terminator.
+**Note:** `buf[i]` is checked (stops at '\0').
+
+```c
+            if (!isalpha((unsigned char)buf[i]) && buf[i] != ' ') {
+                valid = 0; break;
+            }
+```
+**Checks:** Character must be alphabetic OR a space.
+**isalpha():** Returns true for A-Z, a-z.
+**If neither:** Mark as invalid and exit loop.
+
+```c
+        }
+```
+**Closes:** For loop.
+
+```c
+        if (!valid) {
+            printf("Only alphabets and spaces allowed.\n");
+            continue;
+        }
+```
+**If invalid:** Display error and restart.
+
+```c
+        strncpy(out, buf, outlen - 1);
+```
+**Copies:** Input to output buffer.
+**strncpy:** Safer than strcpy, limits bytes copied.
+**outlen - 1:** Leaves room for null terminator.
+
+```c
+        out[outlen - 1] = '\0';
+```
+**Ensures:** String is null-terminated (safety measure).
+
+```c
+        return;
+```
+**Exits:** Function with valid input in `out` buffer.
+
+```c
+    }
+}
+```
+**Closes:** While loop and function.
+
+---
+
+## Utility Function 4: getValidGender (Lines 94-123)
+
+```c
+void getValidGender(char *out, size_t outlen) {
+```
+**Function:** Gets validated gender input.
+**Parameters:**
+- `out` - buffer to store result
+- `outlen` - buffer size
+
+```c
+    char buf[64];
+    while (1) {
+        printf("Enter Gender (Male/Female/Others): ");
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+```
+**Standard input pattern:** Prompt, read, handle errors.
+
+```c
+        trim_newline(buf);
+        if (strlen(buf) == 0) continue;
+```
+**Removes newline:** Skip if empty (no error message here, just re-prompt).
+
+```c
+        char temp[64];
+        for (size_t i = 0; buf[i]; i++)
+            temp[i] = tolower(buf[i]);
+```
+**Converts:** Input to lowercase for case-insensitive comparison.
+**tolower():** Converts uppercase letter to lowercase.
+**Purpose:** Accepts "Male", "MALE", "male", etc.
+
+```c
+        temp[strlen(buf)] = '\0';
+```
+**Adds:** Null terminator to temp string.
+
+```c
+        if (strcmp(temp, "male") == 0 || strcmp(temp, "m") == 0) {
+            strcpy(out, "Male");
+            return;
+        }
+```
+**Checks:** If input is "male" or "m" (case-insensitive).
+**strcmp:** Returns 0 if strings are equal.
+**If match:** Copy standardized "Male" to output and return.
+
+```c
+        if (strcmp(temp, "female") == 0 || strcmp(temp, "f") == 0) {
+            strcpy(out, "Female");
+            return;
+        }
+```
+**Checks:** If input is "female" or "f".
+**If match:** Copy "Female" and return.
+
+```c
+        if (strcmp(temp, "others") == 0 || strcmp(temp, "other") == 0 || strcmp(temp, "o") == 0) {
+            strcpy(out, "Others");
+            return;
+        }
+```
+**Checks:** If input is "others", "other", or "o".
+**If match:** Copy "Others" and return.
+
+```c
+        printf("Invalid gender! Try again.\n");
+    }
+}
+```
+**If none match:** Display error and loop again.
+
+---
+
+## Utility Function 5: getValidContact (Lines 125-152)
+
+```c
+void getValidContact(char *out, size_t outlen) {
+```
+**Function:** Gets exactly 10-digit contact number.
+
+```c
+    char buf[64];
+    while (1) {
+        printf("Enter Contact (10 digits): ");
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+```
+**Standard pattern:** Prompt and read input.
+
+```c
+        trim_newline(buf);
+        if (strlen(buf) != 10) {
+            printf("Contact must be exactly 10 digits.\n");
+            continue;
+        }
+```
+**Validates length:** Must be exactly 10 characters.
+**If not:** Display error and restart.
+
+```c
+        int valid = 1;
+        for (int i = 0; i < 10; i++) {
+            if (!isdigit(buf[i])) { valid = 0; break; }
+        }
+```
+**Checks:** All 10 characters must be digits.
+**Loop:** Through all 10 positions.
+
+```c
+        if (!valid) {
+            printf("Only digits allowed.\n");
+            continue;
+        }
+```
+**If non-digit found:** Display error and restart.
+
+```c
+        strcpy(out, buf);
+        return;
+    }
+}
+```
+**If valid:** Copy to output and return.
+
+---
+
+## Utility Function 6: validDateParts (Lines 154-170)
+
+```c
+/* YYYY/MM/DD validation */
+int validDateParts(int y, int m, int d) {
+```
+**Function:** Validates year, month, and day values.
+**Returns:** 1 if valid, 0 if invalid.
+
+```c
+    if (y < 1900 || y > 9999) return 0;
+```
+**Validates year:** Must be between 1900 and 9999.
+
+```c
+    if (m < 1 || m > 12) return 0;
+```
+**Validates month:** Must be 1-12.
+
+```c
+    int mdays = 31;
+```
+**Default:** Assume 31 days in month.
+
+```c
+    if (m == 2) {
+```
+**February special case:** Has 28 or 29 days.
+
+```c
+        int leap = ((y % 4 == 0 && y % 100 != 0) || (y % 400 == 0));
+```
+**Leap year logic:**
+- Divisible by 4 AND not by 100, OR
+- Divisible by 400
+**Examples:** 2000, 2004, 2024 are leap years; 1900, 2100 are not.
+
+```c
+        mdays = leap ? 29 : 28;
+```
+**Sets days:** 29 if leap year, 28 otherwise.
+**Ternary operator:** condition ? value_if_true : value_if_false.
+
+```c
+    } else if (m == 4 || m == 6 || m == 9 || m == 11) {
+        mdays = 30;
+    }
+```
+**30-day months:** April, June, September, November.
+
+```c
+    if (d < 1 || d > mdays) return 0;
+```
+**Validates day:** Must be between 1 and maximum days for that month.
+
+```c
+    return 1;
+}
+```
+**Returns 1:** All validations passed.
+
+---
+
+## Utility Function 7: getValidDate (Lines 172-211)
+
+```c
+void getValidDate(char *out, size_t outlen) {
+```
+**Function:** Gets validated date in YYYY/MM/DD format.
+
+```c
+    char buf[64];
+    while (1) {
+        printf("Enter Admit Date (YYYY/MM/DD): ");
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+```
+**Standard pattern:** Prompt and read.
+
+```c
+        trim_newline(buf);
+```
+**Removes:** Newline character.
+
+```c
+        if (strlen(buf) != 10 || buf[4] != '/' || buf[7] != '/') {
+            printf("Invalid format.\n");
+            continue;
+        }
+```
+**Format check:**
+- Must be exactly 10 characters
+- Character at position 4 must be '/'
+- Character at position 7 must be '/'
+**Example:** 2024/12/25
+
+```c
+        if (!isdigit(buf[0]) || !isdigit(buf[1]) || !isdigit(buf[2]) || !isdigit(buf[3]) ||
+            !isdigit(buf[5]) || !isdigit(buf[6]) || !isdigit(buf[8]) || !isdigit(buf[9])) {
+            printf("Date contains invalid characters.\n");
+            continue;
+        }
+```
+**Checks:** Each position that should contain a digit actually does.
+**Positions:** 0,1,2,3 (year), 5,6 (month), 8,9 (day).
+
+```c
+        int y = atoi(&buf[0]);
+```
+**Extracts year:** Converts characters starting at position 0 to integer.
+**atoi:** ASCII to integer conversion.
+
+```c
+        int m = atoi(&buf[5]);
+```
+**Extracts month:** Starting at position 5.
+
+```c
+        int d = atoi(&buf[8]);
+```
+**Extracts day:** Starting at position 8.
+
+```c
+        if (!validDateParts(y, m, d)) {
+            printf("Invalid date.\n");
+            continue;
+        }
+```
+**Validates:** Year, month, day values using previously defined function.
+**Checks:** Leap years, days in month, etc.
+
+```c
+        strcpy(out, buf);
+        return;
+    }
+}
+```
+**If valid:** Copy to output and return.
+
+---
+
+## Linked List Function 1: idExists (Lines 215-223)
+
+```c
+/* ---------------------- LINKED LIST OPERATIONS ---------------------- */
+
+int idExists(int id) {
+```
+**Function:** Checks if a patient ID already exists in the list.
+**Returns:** 1 if exists, 0 if not.
+
+```c
+    Patient *p = head;
+```
+**Creates:** Pointer starting at first patient.
+
+```c
+    while (p) {
+```
+**Loop:** Through all patients until NULL (end of list).
+**Condition:** Continues while p is not NULL.
+
+```c
+        if (p->patientID == id) return 1;
+```
+**Checks:** If current patient's ID matches the one we're looking for.
+**If match:** Return 1 immediately (found).
+
+```c
+        p = p->next;
+```
+**Moves:** To next patient in the list.
+
+```c
+    }
+    return 0;
+}
+```
+**If loop completes:** ID not found, return 0.
+
+---
+
+## Linked List Function 2: addPatient (Lines 225-259)
+
+```c
+void addPatient() {
+```
+**Function:** Adds a new patient record to the list.
+
+```c
+    Patient *n = malloc(sizeof(Patient));
+```
+**Allocates memory:** Creates space for one Patient structure.
+**malloc:** Memory allocation function.
+**sizeof(Patient):** Number of bytes needed for one Patient.
+**Returns:** Pointer to allocated memory.
+
+```c
+    if (!n) {
+        printf("Memory error.\n");
+        return;
+    }
+```
+**Error check:** If malloc fails (returns NULL), display error and exit.
+
+```c
+    while (1) {
+        n->patientID = getValidPositiveInteger("Enter Patient ID: ");
+```
+**Gets ID:** Using validation function.
+**n->patientID:** Accesses patientID field of structure pointed to by n.
+
+```c
+        if (!idExists(n->patientID)) break;
+```
+**Checks uniqueness:** If ID doesn't exist, exit loop.
+
+```c
+        printf("ID already exists! Try again.\n");
+    }
+```
+**If ID exists:** Display error and prompt again.
+
+```c
+    getValidAlphaSpace("Enter Name: ", n->name, NAME_LEN);
+```
+**Gets name:** Validated alphabetic input with spaces.
+
+```c
+    n->age = getValidPositiveInteger("Enter Age: ");
+```
+**Gets age:** Validated positive integer.
+
+```c
+    getValidGender(n->gender, GENDER_LEN);
+```
+**Gets gender:** Validated gender selection.
+
+```c
+    getValidContact(n->contact, CONTACT_LEN);
+```
+**Gets contact:** Validated 10-digit number.
+
+```c
+    getValidAlphaSpace("Enter Disease: ", n->disease, DISEASE_LEN);
+```
+**Gets disease:** Validated text input.
+
+```c
+    getValidDate(n->admitDate, DATE_LEN);
+```
+**Gets date:** Validated date in correct format.
+
+```c
+    n->next = NULL;
+```
+**Sets next pointer:** To NULL (will be last node in list).
+
+```c
+    if (!head) head = n;
+```
+**If list empty:** Make this new node the head (first node).
+
+```c
+    else {
+        Patient *p = head;
+        while (p->next) p = p->next;
+```
+**If list not empty:** 
+- Start at head
+- Traverse to last node (where next is NULL)
+
+```c
+        p->next = n;
+    }
+```
+**Links new node:** Sets last node's next pointer to new node.
+
+```c
+    printf("✔ Patient added successfully!\n");
+}
+```
+**Confirmation:** Display success message.
+
+---
+
+## Linked List Function 3: displayAll (Lines 261-280)
+
+```c
+void displayAll() {
+```
+**Function:** Displays all patient records in tabular format.
+
+```c
+    if (!head) {
+        printf("No records.\n");
+        return;
+    }
+```
+**Empty check:** If list is empty, display message and exit.
+
+```c
+    printf("\n--- All Patient Records ---\n");
+```
+**Header:** Title for the display section.
+
+```c
+    printf("%-6s %-20s %-4s %-8s %-12s %-15s %-10s\n",
+           "ID", "Name", "Age", "Gender", "Contact", "Disease", "AdmitDate");
+```
+**Column headers:**
+- `%-6s` - Left-aligned string, minimum 6 characters wide
+- Similar for other columns
+**Purpose:** Creates aligned table columns.
+
+```c
+    printf("-------------------------------------------------------------------------------\n");
+```
+**Separator line:** Visual divider between header and data.
+
+```c
+    Patient *p = head;
+```
+**Initialize:** Pointer to traverse list.
+
+```c
+    while (p) {
+```
+**Loop:** Through all patients.
+
+```c
+        printf("%-6d %-20s %-4d %-8s %-12s %-15s %-10s\n",
+               p->patientID, p->name, p->age,
+               p->gender, p->contact, p->disease, p->admitDate);
+```
+**Prints one row:** All fields of current patient.
+**Format specifiers:**
+- `%-6d` - Left-aligned integer, minimum 6 characters
+- Matches column header widths for alignment
+
+```c
+        p = p->next;
+    }
+}
+```
+**Move to next:** Patient and continue loop.
+
+---
+
+## Linked List Function 4: searchByID (Lines 282-290)
+
+```c
+Patient* searchByID(int id) {
+```
+**Function:** Searches for patient by ID.
+**Returns:** Pointer to Patient if found, NULL if not.
+
+```c
+    Patient *p = head;
+    while (p) {
+        if (p->patientID == id) return p;
+        p = p->next;
+    }
+    return NULL;
+}
+```
+**Logic:** Same as idExists but returns pointer instead of 1/0.
+**Traverses list:** Returns patient pointer when ID matches.
+**If not found:** Returns NULL after checking all patients.
+
+---
+
+## Linked List Function 5: searchPatient (Lines 292-307)
+
+```c
+void searchPatient() {
+```
+**Function:** User interface for searching a patient.
+
+```c
+    int id = getValidPositiveInteger("Enter Patient ID to search: ");
+```
+**Gets ID:** From user with validation.
+
+```c
+    Patient *p = searchByID(id);
+```
+**Searches:** Using helper function.
+
+```c
+    if (!p) {
+        printf("Patient not found.\n");
+        return;
+    }
+```
+**If not found:** Display message and exit.
+
+```c
+    printf("\nPatient Found:\n");
+    printf("ID: %d\nName: %s\nAge: %d\nGender: %s\nContact: %s\nDisease: %s\nAdmit Date: %s\n",
+           p->patientID, p->name, p->age,
+           p->gender, p->contact, p->disease, p->admitDate);
+}
+```
+**If found:** Display all patient details in formatted output.
+**\n:** Creates line breaks between fields.
+
+---
+
+## Linked List Function 6: modifyPatient (Lines 309-329)
+
+```c
+void modifyPatient() {
+```
+**Function:** Modifies an existing patient record.
+
+```c
+    int id = getValidPositiveInteger("Enter Patient ID to modify: ");
+    Patient *p = searchByID(id);
+```
+**Gets ID:** And searches for the patient.
+
+```c
+    if (!p) {
+        printf("Patient not found.\n");
+        return;
+    }
+```
+**Validation:** Exit if patient doesn't exist.
+
+```c
+    printf("\nRe-enter all details:\n");
+```
+**Instruction:** Tells user to enter all fields again.
+
+```c
+    getValidAlphaSpace("New Name: ", p->name, NAME_LEN);
+    p->age = getValidPositiveInteger("New Age: ");
+    getValidGender(p->gender, GENDER_LEN);
+    getValidContact(p->contact, CONTACT_LEN);
+    getValidAlphaSpace("New Disease: ", p->disease, DISEASE_LEN);
+    getValidDate(p->admitDate, DATE_LEN);
+```
+**Updates all fields:** Directly modifies existing patient structure.
+**Note:** ID cannot be changed (not prompted).
+
+```c
+    printf("✔ Record updated.\n");
+}
+```
+**Confirmation:** Success message.
+
+---
+
+## Linked List Function 7: deletePatient (Lines 331-355)
+
+```c
+void deletePatient() {
+```
+**Function:** Deletes a patient record from the list.
+
+```c
+    int id = getValidPositiveInteger("Enter Patient ID to delete: ");
+```
+**Gets ID:** Of patient to delete.
+
+```c
+    Patient *cur = head;
+    Patient *prev = NULL;
+```
+**Two pointers:**
+- `cur` - Current node being examined
+- `prev` - Previous node (needed to relink list)
+
+```c
+    while (cur && cur->patientID != id) {
+```
+**Search loop:** Continue while not at end AND ID doesn't match.
+
+```c
+        prev = cur;
+        cur = cur->next;
+    }
+```
+**Advance:** Both pointers forward through list.
+
+```c
+    if (!cur) {
+        printf("Patient not found.\n");
+        return;
+    }
+```
+**Not found:** If cur is NULL, we reached end without finding ID.
+
+```c
+    if (!prev) head = cur->next;
+```
+**Delete first node:** If prev is NULL, we're deleting head.
+**Action:** Make head point to second node.
+
+```c
+    else prev->next = cur->next;
+```
+**Delete middle/last node:** Link previous node to next node.
+**Effect:** Removes cur from the chain.
+
+```c
+    free(cur);
+```
+**Free memory:** Releases allocated memory back to system.
+
+```c
+    printf("✔ Record deleted.\n");
+}
+```
+**Confirmation:** Success message.
+
+---
+
+## Main Function (Lines 359-381)
+
+```c
+/* ---------------------- MAIN MENU ---------------------- */
+
+int main() {
+```
+**Entry point:** Program execution starts here.
+
+```c
+    while (1) {
+```
+**Infinite loop:** Menu keeps appearing until user chooses to exit.
+
+```c
+        printf("\n===== HOSPITAL MANAGEMENT SYSTEM =====\n");
+        printf("1. Add Patient\n");
+        printf("2. Display All Patients\n");
+        printf("3. Search Patient\n");
+        printf("4. Modify Record\n");
+        printf("5. Delete Record\n");
+        printf("6. Exit\n");
+```
+**Menu display:** Shows all available options to user.
+
+```c
+        int ch = getValidPositiveInteger("Enter choice: ");
+```
+**Gets choice:** Validated positive integer input.
+
+```c
+        switch (ch) {
+```
+**Switch statement:** Executes different code based on choice value.
+
+```c
+            case 1: addPatient(); break;
+```
+**Option 1:** Call addPatient function and break out of switch.
+
+```c
+            case 2: displayAll(); break;
+```
+**Option 2:** Call displayAll function.
+
+```c
+            case 3: searchPatient(); break;
+```
+**Option 3:** Call searchPatient function.
+
+```c
+            case 4: modifyPatient(); break;
+```
+**Option 4:** Call modifyPatient function.
+
+```c
+            case 5: deletePatient(); break;
+```
+**Option 5:** Call deletePatient function.
+
+```c
+            case 6: printf("Goodbye!\n"); return 0;
+```
+**Option 6:** Exit program.
+**return 0:** Indicates successful program termination.
+
+```c
+            default: printf("Invalid choice.\n");
+```
+**Invalid choice:** If user enters number other than 1-6.
+
+```c
+        }
+    }
+}
+```
+**Closes:** Switch, while loop, and main function.
+
+---
+
+## Summary
+
+This program implements a complete hospital management system with:
+- **Data Structure:** Singly linked list for dynamic patient records
+- **Input Validation:** Comprehensive checks for all data types
+- **CRUD Operations:** Create, Read, Update, Delete functionality
+- **User Interface:** Menu-driven console application
+- **Memory Management:** Dynamic allocation with malloc/free
+
+**Key Techniques:**
+- Pointer manipulation for linked lists
+- String processing and validation
+- Modular function design
+- Input sanitization and error handling
