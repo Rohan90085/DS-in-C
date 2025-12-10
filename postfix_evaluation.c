@@ -1,3 +1,4 @@
+//implementation of postfix expression evaluation using stack in array
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
