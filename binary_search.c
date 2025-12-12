@@ -1,4 +1,3 @@
-//simple insertion and binary search implementation in C
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
@@ -31,6 +30,25 @@ bool search(node *root,int d){
     else if(d<root->d) return search(root->left,d);
     else return search(root->right,d);
 }
+void inorder(node *root){
+    if(root==NULL) return ;
+    inorder(root->left);
+    printf("%d\t",root->d);
+    inorder(root->right);
+}
+void postorder(node *root){
+    if(root==NULL) return;
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d\t",root->d);
+    
+}
+void preorder(node *root){
+    if(root==NULL) return;
+    printf("%d\t",root->d);
+    preorder(root->left);
+    preorder(root->right);
+}
 int main(){
     node *root=NULL;
     root=insert(root,50);
@@ -42,4 +60,10 @@ int main(){
     printf("got");
     else 
     printf("no");
+    printf("\n");
+    inorder(root);
+    printf("\n");
+    preorder(root);
+    printf("\n");
+    postorder(root);
 }
