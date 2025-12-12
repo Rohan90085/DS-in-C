@@ -51,19 +51,42 @@ void preorder(node *root){
 }
 int main(){
     node *root=NULL;
-    root=insert(root,50);
-    root=insert(root,45);
-    root=insert(root,58);
-    root=insert(root,33);
-    root=insert(root,99);
-    if(search(root,100))
-    printf("got");
-    else 
-    printf("no");
-    printf("\n");
-    inorder(root);
-    printf("\n");
-    preorder(root);
-    printf("\n");
-    postorder(root);
+    int val, choice;
+    
+    while(1){
+        printf("1. Insert  2. Search  3. Inorder  4. Preorder  5. Postorder  6. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+        
+        switch(choice){
+            case 1:
+                printf("Enter value: ");
+                scanf("%d", &val);
+                root = insert(root, val);
+                break;
+            case 2:
+                printf("Enter value to search: ");
+                scanf("%d", &val);
+                printf(search(root, val) ? "Found\n" : "Not Found\n");
+                break;
+            case 3:
+                printf("Inorder: ");
+                inorder(root);
+                printf("\n");
+                break;
+            case 4:
+                printf("Preorder: ");
+                preorder(root);
+                printf("\n");
+                break;
+            case 5:
+                printf("Postorder: ");
+                postorder(root);
+                printf("\n");
+                break;
+            case 6:
+                return 0;
+        }
+    }
+    return 0;
 }
