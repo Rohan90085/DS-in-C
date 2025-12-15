@@ -49,12 +49,37 @@ void preorder(node *root){
     preorder(root->left);
     preorder(root->right);
 }
+node *findmin(node *root){
+    while(root->left) root=root->left;
+    return root;
+}
+node *delete(node *root,int d){
+    if(!root) return root;
+    if(d<root->d) root->left=delete(root->left,d);
+    else if(d>root->d) root->right=delete(root->right,d);
+    else{
+        if(root->left==NULL){
+            node *temp=root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right==NULL){
+            node *temp=root->left;
+            free(root);
+            return temp;
+        }
+        node *temp=findmin(root->right);
+        root->d=temp->d;
+        root->right=delete(root->right,temp->d);
+    }
+    return root;
+}
 int main(){
     node *root=NULL;
     int val, choice;
     
     while(1){
-        printf("1. Insert  2. Search  3. Inorder  4. Preorder  5. Postorder  6. Exit\n");
+        printf("1. Insert  2. Search  3. Inorder  4. Preorder  5. Postorder  6. delete 7. Exit\n");
         printf("Enter choice: ");
         scanf("%d", &choice);
         
@@ -85,6 +110,11 @@ int main(){
                 printf("\n");
                 break;
             case 6:
+                printf("Enter value to delete: ");
+                scanf("%d", &val);
+                root = delete(root, val);
+                break;
+            case 7:
                 return 0;
         }
     }
