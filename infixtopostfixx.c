@@ -174,3 +174,123 @@ int isempty() {
 
 //     return 0;
 // }
+//------------------------------------------------------------------------------------
+//dynamically allocate stack memory
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+
+// #define MAX 100
+
+// char infix[MAX], postfix[MAX];
+
+// /* Stack structure */
+// typedef struct {
+//     char *arr;
+//     int top;
+//     int capacity;
+// } Stack;
+
+// /* Stack functions */
+// void init(Stack *s, int size) {
+//     s->capacity = size;
+//     s->top = -1;
+//     s->arr = (char *)malloc(sizeof(char) * size);
+// }
+
+// void push(Stack *s, char c) {
+//     if (s->top == s->capacity - 1) {
+//         printf("Stack Overflow\n");
+//         return;
+//     }
+//     s->arr[++s->top] = c;
+// }
+
+// char pop(Stack *s) {
+//     if (s->top == -1) {
+//         printf("Stack Underflow\n");
+//         exit(1);
+//     }
+//     return s->arr[s->top--];
+// }
+
+// int isEmpty(Stack *s) {
+//     return s->top == -1;
+// }
+
+// char peek(Stack *s) {
+//     return s->arr[s->top];
+// }
+
+// /* Utility functions */
+// int space(char c) {
+//     return (c == ' ' || c == '\t' || c == '\n');
+// }
+
+// int precedence(char c) {
+//     switch (c) {
+//         case '^': return 3;
+//         case '*':
+//         case '/':
+//         case '%': return 2;
+//         case '+':
+//         case '-': return 1;
+//         default: return 0;
+//     }
+// }
+
+// /* Infix to Postfix */
+// void intopost() {
+//     Stack s;
+//     init(&s, MAX);
+
+//     int i, j = 0;
+//     char symbol;
+
+//     for (i = 0; infix[i] != '\0'; i++) {
+//         symbol = infix[i];
+
+//         if (!space(symbol)) {
+//             if ((symbol >= 'a' && symbol <= 'z') ||
+//                 (symbol >= 'A' && symbol <= 'Z') ||
+//                 (symbol >= '0' && symbol <= '9')) {
+//                 postfix[j++] = symbol;
+//             }
+//             else if (symbol == '(') {
+//                 push(&s, symbol);
+//             }
+//             else if (symbol == ')') {
+//                 while (!isEmpty(&s) && peek(&s) != '(')
+//                     postfix[j++] = pop(&s);
+//                 pop(&s);  // remove '('
+//             }
+//             else { // operator
+//                 while (!isEmpty(&s) &&
+//                        precedence(peek(&s)) >= precedence(symbol))
+//                     postfix[j++] = pop(&s);
+//                 push(&s, symbol);
+//             }
+//         }
+//     }
+
+//     while (!isEmpty(&s))
+//         postfix[j++] = pop(&s);
+
+//     postfix[j] = '\0';
+// }
+
+// /* Print */
+// void print() {
+//     printf("Postfix Expression: %s\n", postfix);
+// }
+
+// /* Main */
+// int main() {
+//     printf("Enter infix expression: ");
+//     fgets(infix, MAX, stdin);
+
+//     intopost();
+//     print();
+
+//     return 0;
+// }
