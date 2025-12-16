@@ -108,6 +108,7 @@ char pop() {
 int isempty() {
     return (top == -1);
 }
+//-----------------------------------------------------------------------------------------------------
 //another method
 // #include <stdio.h>
 // #include <stdlib.h>
