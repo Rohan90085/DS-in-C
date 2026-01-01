@@ -7,7 +7,7 @@
 
 char stack[MAX], infix[MAX], postfix[MAX];
 int top = -1;
-
+hhhh
 void push(char);
 char pop();
 int isempty();
