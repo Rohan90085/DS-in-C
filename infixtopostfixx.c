@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-
+ghhhhhhhhh
 #define MAX 100
 
 char stack[MAX], infix[MAX], postfix[MAX];
