@@ -298,3 +298,57 @@ int isempty() {
 // }
 //----------------------------------------------------------------------
 //dynamically allocated stack
+/*#include<stdio.h>
+#include<stdlib.h>
+#include<ctype.h>
+char *stack;
+int top=-1,size=100;
+void push(char c){
+    stack[++top]=c;
+}
+char pop(){
+    return (stack[top--]);
+}
+int priority(char c){
+    if(c=='^') return 3;
+    if(c=='*'||c=='/') return 2;
+    if(c=='+'||c=='-') return 1;
+    return 0;
+}
+
+int main(){
+    char expr[100];
+    char *e,t;
+    printf("entert the infix>.");
+    scanf("%s",expr);
+    stack=malloc(sizeof(char)*size);
+    e=expr;
+    while(*e!='\0'){
+        if(isalnum(*e)){
+            printf("%c",*e);
+        }
+         else if(*e=='(') {push(*e);}
+         else if(*e==')'){
+            while((t=pop())!='('){
+                printf("%c",t);
+            }
+            
+        }
+        else{
+            while(priority(stack[top])>=priority(*e)){
+                printf("%c",pop());
+                
+            }
+            push(*e);
+        }
+        
+        e++;
+    }
+    while(top!=-1)
+    printf("%c",pop());
+    return 0;
+    
+}*/
+
+
+
