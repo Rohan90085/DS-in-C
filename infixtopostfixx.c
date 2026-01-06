@@ -16,7 +16,8 @@ int space(char);
 int precedence(char);
 void print();
 
-int main() {
+int main() 
+{
     printf("Enter infix expression: ");
     fgets(infix, MAX, stdin);     // safer than gets()
 
@@ -24,9 +25,9 @@ int main() {
     print();
 
     return 0;
-}
+ }
 
-void intopost() {
+ void intopost() {
     int i, j = 0;
     char symbol, next;
 
@@ -295,3 +296,5 @@ int isempty() {
 
 //     return 0;
 // }
+//----------------------------------------------------------------------
+//dynamically allocated stack
