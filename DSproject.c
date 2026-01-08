@@ -132,7 +132,7 @@ void getValidContact(char *out, size_t outlen) {
 
         trim_newline(buf);
         if (strlen(buf) != 10) {
-            printf("Contact must be exactly 10 digits.\n");
+            printf("Contact must  be exactly 10 digits.\n");
             continue;
         }
 
