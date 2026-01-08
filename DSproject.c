@@ -49,7 +49,7 @@ int getValidPositiveInteger(const char *prompt) {
         }
 
         if (!valid) {
-            printf("Invalid! Only digits allowed.\n");
+            printf("Invalid!  Only digits allowed.\n");
             continue;
         }
 
