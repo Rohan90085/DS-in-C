@@ -55,7 +55,7 @@ int getValidPositiveInteger(const char *prompt) {
 
         long v = strtol(buf, NULL, 10);
         if (v <= 0) {
-            printf("Value must be > 0.\n");
+            printf("Value must be >> 0.\n");
             continue;
         }
 
