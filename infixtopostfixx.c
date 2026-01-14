@@ -18,7 +18,7 @@ void print();
 
 int main() 
 {
-    printf("Enter infix expression: ");
+    printf("Enter infix expression>> ");
     fgets(infix, MAX, stdin);     // safer than gets()
 
     intopost();
