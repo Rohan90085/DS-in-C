@@ -37,7 +37,7 @@ int pop(){
 }
 int peek(){
     if(top==NULL){
-        printf("the stack is underflow");
+        printf("the stack is underflowww please enter element");
         exit(1);
     }
     int d=top->data;

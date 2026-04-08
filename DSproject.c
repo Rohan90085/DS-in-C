@@ -49,13 +49,13 @@ int getValidPositiveInteger(const char *prompt) {
         }
 
         if (!valid) {
-            printf("Invalid! Only digits allowed.\n");
+            printf("Invalid!  Only digits allowed.\n");
             continue;
         }
 
         long v = strtol(buf, NULL, 10);
         if (v <= 0) {
-            printf("Value must be > 0.\n");
+            printf("Value must be >> 0.\n");
             continue;
         }
 
@@ -132,7 +132,7 @@ void getValidContact(char *out, size_t outlen) {
 
         trim_newline(buf);
         if (strlen(buf) != 10) {
-            printf("Contact must be exactly 10 digits.\n");
+            printf("Contact must  be exactly 10 digits.\n");
             continue;
         }
 
